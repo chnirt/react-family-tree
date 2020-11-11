@@ -3,9 +3,9 @@ import { Layout, Menu } from 'antd'
 import {
 	MenuUnfoldOutlined,
 	MenuFoldOutlined,
-	UserOutlined,
-	VideoCameraOutlined,
-	UploadOutlined,
+	ApartmentOutlined,
+	TableOutlined,
+	LogoutOutlined,
 } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import { useSetRecoilState } from 'recoil'
@@ -31,7 +31,7 @@ export function MyLayout({ children }) {
 		}, 1000)
 	}
 
-	const backgroundColor = '#8d6e63'
+	const backgroundColor = '#5D4037'
 
 	return (
 		<Layout>
@@ -43,19 +43,19 @@ export function MyLayout({ children }) {
 			>
 				<div className='logo' />
 				<Menu
-					style={{ backgroundColor, color: '#FFFFFF' }}
+					style={{ backgroundColor, color: '#ffffff' }}
 					mode='inline'
 					defaultSelectedKeys={['1']}
 				>
-					<Menu.Item key='1' icon={<UserOutlined />}>
+					<Menu.Item key='1' icon={<ApartmentOutlined />}>
 						Tree
 						<Link to='/dashboard' />
 					</Menu.Item>
-					<Menu.Item key='2' icon={<VideoCameraOutlined />}>
+					<Menu.Item key='2' icon={<TableOutlined />}>
 						Table
 						<Link to='/table' />
 					</Menu.Item>
-					<Menu.Item key='3' icon={<UploadOutlined />} onClick={handleLogout}>
+					<Menu.Item key='3' icon={<LogoutOutlined />} onClick={handleLogout}>
 						Log out
 					</Menu.Item>
 				</Menu>
