@@ -3,7 +3,7 @@ import { Layout, Menu } from 'antd'
 import {
 	MenuUnfoldOutlined,
 	MenuFoldOutlined,
-	ApartmentOutlined,
+	PartitionOutlined,
 	TableOutlined,
 	LogoutOutlined,
 } from '@ant-design/icons'
@@ -41,13 +41,13 @@ export function MyLayout({ children }) {
 				collapsible
 				collapsed={collapsed}
 			>
-				<div className='logo' />
+				<div className='logo'></div>
 				<Menu
 					style={{ backgroundColor, color: '#ffffff' }}
 					mode='inline'
 					defaultSelectedKeys={['1']}
 				>
-					<Menu.Item key='1' icon={<ApartmentOutlined />}>
+					<Menu.Item key='1' icon={<PartitionOutlined />}>
 						Tree
 						<Link to='/dashboard' />
 					</Menu.Item>

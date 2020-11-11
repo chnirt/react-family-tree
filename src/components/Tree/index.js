@@ -1,12 +1,28 @@
-import React, { useRef, useState } from 'react'
+import React, { Fragment, useRef, useState } from 'react'
 import SortableTree, {
 	addNodeUnderParent,
 	removeNodeAtPath,
 	changeNodeAtPath,
 	toggleExpandedForAll,
 } from 'react-sortable-tree'
+import { Button, Input, Row, Typography } from 'antd'
+import {
+	SearchOutlined,
+	NodeCollapseOutlined,
+	NodeExpandOutlined,
+	LeftOutlined,
+	RightOutlined,
+	SisternodeOutlined,
+	SubnodeOutlined,
+	EditOutlined,
+	DeleteOutlined,
+	InfoCircleOutlined,
+} from '@ant-design/icons'
 import 'react-sortable-tree/style.css' // This only needs to be imported once in your app
 import './index.less'
+import { PRIMARY } from '../../constants'
+
+const { Text } = Typography
 
 const seed = [
 	{
@@ -35,7 +51,7 @@ const seed = [
 	},
 ]
 
-export function Tree() {
+export function Tree({ showDrawer = () => {} }) {
 	const [treeData, setTreeData] = useState(seed)
 	const [searchString, setSearchString] = useState('')
 	const [searchFocusIndex, setSearchFocusIndex] = useState(0)
@@ -119,6 +135,7 @@ export function Tree() {
 			newNode: {
 				children,
 				title: value,
+				subtitle: 'xxx',
 			},
 		})
 
@@ -146,6 +163,7 @@ export function Tree() {
 			getNodeKey,
 			newNode: {
 				title: value,
+				subtitle: 'xxx',
 			},
 		})
 
@@ -174,6 +192,7 @@ export function Tree() {
 			getNodeKey,
 			newNode: {
 				title: value,
+				subtitle: 'xxx',
 			},
 		})
 
@@ -217,54 +236,54 @@ export function Tree() {
 				overflowY: 'auto',
 			}}
 		>
-			<div style={{ flex: '0 0 auto', padding: '0 15px' }}>
-				<h3>Family Members Tree</h3>
+			<div>
 				<input ref={inputEl} type='text' />
-				<br />
-				<button onClick={createNode}>Create Node</button>
-				<br />
-				<button onClick={expandAll}>Expand All</button>
-				<button onClick={collapseAll}>Collapse All</button>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<form
-					style={{ display: 'inline-block' }}
-					onSubmit={(event) => {
-						event.preventDefault()
-					}}
-				>
-					<label htmlFor='find-box'>
-						Search:&nbsp;
-						<input
-							id='find-box'
-							type='text'
+				<Row justify='space-between'>
+					<Row style={{ marginTop: 10 }} align='middle'>
+						<Button
+							icon={<NodeCollapseOutlined style={{ color: PRIMARY }} />}
+							size='middle'
+							onClick={collapseAll}
+						/>
+						<Button
+							style={{ marginLeft: 10 }}
+							icon={<NodeExpandOutlined style={{ color: PRIMARY }} />}
+							size='middle'
+							onClick={expandAll}
+						/>
+						<Input
+							style={{ marginLeft: 10, width: 200 }}
+							placeholder='Member name'
+							prefix={<SearchOutlined style={{ color: PRIMARY }} />}
 							value={searchString}
 							onChange={(event) => setSearchString(event.target.value)}
+							allowClear
 						/>
-					</label>
+						<Button
+							style={{ marginLeft: 10 }}
+							icon={<LeftOutlined style={{ color: PRIMARY }} />}
+							size='middle'
+							disabled={!searchFoundCount}
+							onClick={selectPrevMatch}
+						/>
+						<Button
+							style={{ marginLeft: 10 }}
+							icon={<RightOutlined style={{ color: PRIMARY }} />}
+							size='middle'
+							disabled={!searchFoundCount}
+							onClick={selectNextMatch}
+						/>
+						<div style={{ marginLeft: 10 }}>
+							<Text>{searchFoundCount > 0 ? searchFocusIndex + 1 : 0}</Text>
+							<Text style={{ marginLeft: 5 }}>/</Text>
+							<Text style={{ marginLeft: 5 }}>{searchFoundCount || 0}</Text>
+						</div>
+					</Row>
 
-					<button
-						type='button'
-						disabled={!searchFoundCount}
-						onClick={selectPrevMatch}
-					>
-						&lt;
-					</button>
-
-					<button
-						type='submit'
-						disabled={!searchFoundCount}
-						onClick={selectNextMatch}
-					>
-						&gt;
-					</button>
-
-					<span>
-						&nbsp;
-						{searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
-						&nbsp;/&nbsp;
-						{searchFoundCount || 0}
-					</span>
-				</form>
+					<Button type='primary' onClick={showDrawer}>
+						Create Member
+					</Button>
+				</Row>
 			</div>
 
 			<SortableTree
@@ -281,26 +300,33 @@ export function Tree() {
 				canDrag={({ node }) => !node.dragDisabled}
 				generateNodeProps={(rowInfo) => ({
 					buttons: [
-						<div>
-							<button
-								label='Add Sibling'
+						<Fragment>
+							<Button
+								icon={<SisternodeOutlined style={{ color: PRIMARY }} />}
+								size='middle'
 								onClick={() => addNodeSibling(rowInfo)}
-							>
-								Add Sibling
-							</button>
-							<button label='Add Child' onClick={() => addNodeChild(rowInfo)}>
-								Add Child
-							</button>
-							<button label='Update' onClick={() => updateNode(rowInfo)}>
-								Update
-							</button>
-							<button label='Delete' onClick={() => removeNode(rowInfo)}>
-								Remove
-							</button>
-							<button label='Alert' onClick={() => alertNodeInfo(rowInfo)}>
-								Info
-							</button>
-						</div>,
+							/>
+							<Button
+								icon={<SubnodeOutlined style={{ color: PRIMARY }} />}
+								size='middle'
+								onClick={() => addNodeChild(rowInfo)}
+							/>
+							<Button
+								icon={<EditOutlined style={{ color: PRIMARY }} />}
+								size='middle'
+								onClick={() => updateNode(rowInfo)}
+							/>
+							<Button
+								icon={<DeleteOutlined style={{ color: PRIMARY }} />}
+								size='middle'
+								onClick={() => removeNode(rowInfo)}
+							/>
+							<Button
+								icon={<InfoCircleOutlined style={{ color: PRIMARY }} />}
+								size='middle'
+								onClick={() => alertNodeInfo(rowInfo)}
+							/>
+						</Fragment>,
 					],
 					style: {
 						height: '50px',

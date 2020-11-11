@@ -1,13 +1,16 @@
-import { Button, Drawer } from 'antd'
 import React, { Fragment, useState } from 'react'
+import { Button, Drawer } from 'antd'
 import { Tree } from '../../components'
-import { CloseOutlined } from '@ant-design/icons'
 
 export default function Dashboard() {
 	const [visible, setVisible] = useState(false)
 
 	function showDrawer() {
 		setVisible(true)
+	}
+
+	function closeDrawer() {
+		setVisible(false)
 	}
 
 	function onClose() {
@@ -20,10 +23,7 @@ export default function Dashboard() {
 
 	return (
 		<Fragment>
-			<Button type='primary' onClick={showDrawer}>
-				Create Member
-			</Button>
-			<Tree />
+			<Tree showDrawer={showDrawer} closeDrawer={closeDrawer} />
 
 			<Drawer
 				title='New Member'
