@@ -6,7 +6,7 @@ import SortableTree, {
 	toggleExpandedForAll,
 } from 'react-sortable-tree'
 import 'react-sortable-tree/style.css' // This only needs to be imported once in your app
-import './index.css'
+import './index.less'
 
 const seed = [
 	{
@@ -210,7 +210,13 @@ export function Tree() {
 	const getNodeKey = ({ treeIndex }) => treeIndex
 
 	return (
-		<div style={{ height: '100vh', overflowX: 'hidden', overflowY: 'auto' }}>
+		<div
+			style={{
+				height: 'calc(100vh - 222px)',
+				overflowX: 'hidden',
+				overflowY: 'auto',
+			}}
+		>
 			<div style={{ flex: '0 0 auto', padding: '0 15px' }}>
 				<h3>Family Members Tree</h3>
 				<input ref={inputEl} type='text' />
