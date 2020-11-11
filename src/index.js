@@ -6,7 +6,7 @@ import './index.less'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { ScrollToTop } from './components'
-import { AuthProvider } from './context'
+import { AuthProvider, TreeProvider } from './context'
 import { MyConsole } from './configs'
 
 MyConsole.run()
@@ -14,10 +14,12 @@ MyConsole.run()
 ReactDOM.render(
 	<RecoilRoot>
 		<AuthProvider>
-			<BrowserRouter>
-				<ScrollToTop />
-				<App />
-			</BrowserRouter>
+			<TreeProvider>
+				<BrowserRouter>
+					<ScrollToTop />
+					<App />
+				</BrowserRouter>
+			</TreeProvider>
 		</AuthProvider>
 	</RecoilRoot>,
 	document.getElementById('root')
