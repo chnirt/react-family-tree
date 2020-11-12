@@ -34,7 +34,7 @@ export default function Register() {
 				emailOrYourPhoneNumber,
 				password
 			)
-			console.log(currentUser)
+			// console.log(currentUser)
 			if (currentUser) {
 				notification['success']({
 					message: 'Register',

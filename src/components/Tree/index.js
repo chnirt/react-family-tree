@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import SortableTree from 'react-sortable-tree'
-import { Button, Input, Row, Typography } from 'antd'
+import { Button, Input, Modal, Row, Typography } from 'antd'
 import {
 	SearchOutlined,
 	NodeCollapseOutlined,
@@ -17,12 +17,19 @@ import 'react-sortable-tree/style.css' // This only needs to be imported once in
 import './index.less'
 import { PRIMARY } from '../../constants'
 import { useTree } from '../../context'
+import { TYPE } from '../../constants'
 
 const { Text } = Typography
 
+const { confirm } = Modal
+
 export function Tree() {
 	const {
+		setHeader,
+		setTitle,
+		setSubTitle,
 		setVisible,
+		setRowInfo,
 		collapseAll,
 		expandAll,
 		searchString,
@@ -35,68 +42,94 @@ export function Tree() {
 		updateTreeData,
 		setSearchFoundCount,
 		setSearchFocusIndex,
-		addNodeSibling,
-		addNodeChild,
-		updateNode,
 		removeNode,
 		alertNodeInfo,
 	} = useTree()
 
-	function showDrawer() {
+	function showDrawer({ type, rowInfo }) {
+		switch (type) {
+			case 'AddSibling':
+				setHeader('Add Sibling')
+				setRowInfo(rowInfo)
+				break
+			case 'AddChild':
+				setHeader('Add Child')
+				setRowInfo(rowInfo)
+				break
+			case 'Update':
+				setHeader('Update')
+				setRowInfo(rowInfo)
+				setTitle(rowInfo?.node?.title)
+				setSubTitle(rowInfo?.node?.subtitle)
+				break
+
+			default:
+				setHeader('New Member')
+				break
+		}
 		setVisible(true)
+	}
+
+	function handleRemoveNode(rowInfo) {
+		confirm({
+			title: 'Are you sure?',
+			onOk() {
+				removeNode(rowInfo)
+			},
+			onCancel() {
+				Modal.destroyAll()
+			},
+		})
 	}
 
 	return (
 		<Fragment>
-			<div>
-				{/* <input ref={inputEl} type='text' /> */}
-				<Row justify='space-between'>
-					<Row style={{ marginTop: 10 }} align='middle'>
-						<Button
-							icon={<NodeCollapseOutlined style={{ color: PRIMARY }} />}
-							size='middle'
-							onClick={collapseAll}
-						/>
-						<Button
-							style={{ marginLeft: 10 }}
-							icon={<NodeExpandOutlined style={{ color: PRIMARY }} />}
-							size='middle'
-							onClick={expandAll}
-						/>
-						<Input
-							style={{ marginLeft: 10, width: 200 }}
-							placeholder='Member name'
-							prefix={<SearchOutlined style={{ color: PRIMARY }} />}
-							value={searchString}
-							onChange={(event) => setSearchString(event.target.value)}
-							allowClear
-						/>
-						<Button
-							style={{ marginLeft: 10 }}
-							icon={<LeftOutlined style={{ color: PRIMARY }} />}
-							size='middle'
-							disabled={!searchFoundCount}
-							onClick={selectPrevMatch}
-						/>
-						<Button
-							style={{ marginLeft: 10 }}
-							icon={<RightOutlined style={{ color: PRIMARY }} />}
-							size='middle'
-							disabled={!searchFoundCount}
-							onClick={selectNextMatch}
-						/>
-						<div style={{ marginLeft: 10 }}>
-							<Text>{searchFoundCount > 0 ? searchFocusIndex + 1 : 0}</Text>
-							<Text style={{ marginLeft: 5 }}>/</Text>
-							<Text style={{ marginLeft: 5 }}>{searchFoundCount || 0}</Text>
-						</div>
-					</Row>
-
-					<Button type='primary' onClick={showDrawer}>
-						Create Member
-					</Button>
+			<Row justify='space-between'>
+				<Row style={{ marginTop: 10 }} align='middle'>
+					<Button
+						icon={<NodeCollapseOutlined style={{ color: PRIMARY }} />}
+						size='middle'
+						onClick={collapseAll}
+					/>
+					<Button
+						style={{ marginLeft: 10 }}
+						icon={<NodeExpandOutlined style={{ color: PRIMARY }} />}
+						size='middle'
+						onClick={expandAll}
+					/>
+					<Input
+						style={{ marginLeft: 10, width: 200 }}
+						placeholder='Member name'
+						prefix={<SearchOutlined style={{ color: PRIMARY }} />}
+						value={searchString}
+						onChange={(event) => setSearchString(event.target.value)}
+						allowClear
+					/>
+					<Button
+						style={{ marginLeft: 10 }}
+						icon={<LeftOutlined style={{ color: PRIMARY }} />}
+						size='middle'
+						disabled={!searchFoundCount}
+						onClick={selectPrevMatch}
+					/>
+					<Button
+						style={{ marginLeft: 10 }}
+						icon={<RightOutlined style={{ color: PRIMARY }} />}
+						size='middle'
+						disabled={!searchFoundCount}
+						onClick={selectNextMatch}
+					/>
+					<div style={{ marginLeft: 10 }}>
+						<Text>{searchFoundCount > 0 ? searchFocusIndex + 1 : 0}</Text>
+						<Text style={{ marginLeft: 5 }}>/</Text>
+						<Text style={{ marginLeft: 5 }}>{searchFoundCount || 0}</Text>
+					</div>
 				</Row>
-			</div>
+
+				<Button type='primary' onClick={() => showDrawer({ type: TYPE.ADD })}>
+					Create Member
+				</Button>
+			</Row>
 
 			<div
 				style={{
@@ -120,26 +153,36 @@ export function Tree() {
 					generateNodeProps={(rowInfo) => ({
 						buttons: [
 							<Fragment>
+								{/* {JSON.stringify(rowInfo)} */}
+								{/* {rowInfo?.node?.children?.length > 0 ? 'T' : 'F'} */}
 								<Button
 									icon={<SisternodeOutlined style={{ color: PRIMARY }} />}
 									size='middle'
-									onClick={() => addNodeSibling(rowInfo)}
+									onClick={() => {
+										showDrawer({ type: TYPE.ADDSIBLING, rowInfo })
+									}}
 								/>
 								<Button
 									icon={<SubnodeOutlined style={{ color: PRIMARY }} />}
 									size='middle'
-									onClick={() => addNodeChild(rowInfo)}
+									onClick={() => {
+										showDrawer({ type: TYPE.ADDCHILD, rowInfo })
+									}}
 								/>
 								<Button
 									icon={<EditOutlined style={{ color: PRIMARY }} />}
 									size='middle'
-									onClick={() => updateNode(rowInfo)}
+									onClick={() => {
+										showDrawer({ type: TYPE.UPDATE, rowInfo })
+									}}
 								/>
-								<Button
-									icon={<DeleteOutlined style={{ color: PRIMARY }} />}
-									size='middle'
-									onClick={() => removeNode(rowInfo)}
-								/>
+								{!rowInfo?.node?.children?.length > 0 && (
+									<Button
+										icon={<DeleteOutlined style={{ color: PRIMARY }} />}
+										size='middle'
+										onClick={() => handleRemoveNode(rowInfo)}
+									/>
+								)}
 								<Button
 									icon={<InfoCircleOutlined style={{ color: PRIMARY }} />}
 									size='middle'
@@ -147,9 +190,9 @@ export function Tree() {
 								/>
 							</Fragment>,
 						],
-						style: {
-							height: '50px',
-						},
+						// style: {
+						// 	height: '50px',
+						// },
 					})}
 				/>
 			</div>

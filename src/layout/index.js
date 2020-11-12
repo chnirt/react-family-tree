@@ -4,7 +4,7 @@ import {
 	MenuUnfoldOutlined,
 	MenuFoldOutlined,
 	PartitionOutlined,
-	TableOutlined,
+	// TableOutlined,
 	LogoutOutlined,
 } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -51,10 +51,10 @@ export function MyLayout({ children }) {
 						Tree
 						<Link to='/dashboard' />
 					</Menu.Item>
-					<Menu.Item key='2' icon={<TableOutlined />}>
+					{/* <Menu.Item key='2' icon={<TableOutlined />}>
 						Table
 						<Link to='/table' />
-					</Menu.Item>
+					</Menu.Item> */}
 					<Menu.Item key='3' icon={<LogoutOutlined />} onClick={handleLogout}>
 						Log out
 					</Menu.Item>

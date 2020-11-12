@@ -50,13 +50,14 @@ function FirebaseValue() {
 	// }
 
 	const authRef = useRef(null)
-	const dbRef = useRef(null)
+	const firestoreRef = useRef(null)
+	const now = firebase.firestore.FieldValue.serverTimestamp()
 
 	useLayoutEffect(() => {
 		if (firebase.apps.length === 0) {
 			firebase.initializeApp(firebaseConfig)
 			authRef.current = firebase.auth()
-			dbRef.current = firebase.firestore()
+			firestoreRef.current = firebase.firestore()
 		}
 	}, [])
 
@@ -221,37 +222,48 @@ function FirebaseValue() {
 
 		const { email, ...rest } = user
 
-		const result = await dbRef.current
-			.collection('users')
-			.doc(email)
-			.set({
-				...rest,
-				createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-				updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-			})
+		const usersRef = firestoreRef.current.collection('users')
+
+		const result = await usersRef.add({
+			...rest,
+			createdAt: now,
+			updatedAt: now,
+		})
 
 		return result
 	}
 
-	async function getUsers({ email = '' }) {
-		if (authRef.current) {
-			const usersRef = dbRef.current.collection('users')
+	async function addMember(member) {
+		console.log('addMember')
 
-			const snapshot = await usersRef
-				.orderBy(firebase.firestore.FieldPath.documentId())
-				.startAt(email)
-				.endAt(email + '~')
-				.get()
-
-			// snapshot.forEach(function (doc) {
-			// 	console.log(doc.id, ' => ', doc.data())
-			// })
-
-			return snapshot
+		if (!authRef.current.currentUser) {
+			console.log('Not authorized')
+			return false
 		}
 
-		console.log('Not authorized')
-		return false
+		const membersRef = firestoreRef.current.collection('members')
+
+		membersRef
+			.add(member)
+			.then(function (docRef) {
+				console.log('document created with ID: ', docRef.id)
+			})
+			.catch(function (error) {
+				console.error('Error adding document: ', error)
+			})
+
+		// const { email, ...rest } = member
+
+		// const result = await firestoreRef.current
+		// 	.collection('members')
+		// 	.doc(email)
+		// 	.set({
+		// 		...rest,
+		// 		createdAt: now,
+		// 		updatedAt: now,
+		// 	})
+
+		// return result
 	}
 
 	return {
@@ -269,6 +281,6 @@ function FirebaseValue() {
 		reauthenticateWithCredentialFB,
 
 		addUser,
-		getUsers,
+		addMember,
 	}
 }

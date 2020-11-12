@@ -1,9 +1,20 @@
-import React, { Fragment, useState } from 'react'
-import { Button, Drawer, Input, Select } from 'antd'
+import React, {
+	Fragment,
+	// useState
+} from 'react'
+import {
+	Button,
+	Drawer,
+	Input,
+	// Select
+} from 'antd'
 import { Tree } from '../../components'
-import { useTree } from '../../context'
+import {
+	// useFirebase,
+	useTree,
+} from '../../context'
 
-const { Option } = Select
+// const { Option } = Select
 
 export default function Dashboard() {
 	const {
@@ -13,44 +24,67 @@ export default function Dashboard() {
 		setTitle,
 		subTitle,
 		setSubTitle,
+		header,
+		createNode,
+		rowInfo,
+		setRowInfo,
+		addNodeSibling,
+		addNodeChild,
+		updateNode,
 	} = useTree()
-	const [options] = useState([
-		{
-			id: 'jack',
-			value: 'Jack',
-		},
-		{
-			id: 'lucy',
-			value: 'Lucy',
-		},
-		{
-			id: 'tom',
-			value: 'Tom',
-		},
-	])
+	// const { addMember } = useFirebase()
+	// const [options] = useState([
+	// 	{
+	// 		id: 'jack',
+	// 		value: 'Jack',
+	// 	},
+	// 	{
+	// 		id: 'lucy',
+	// 		value: 'Lucy',
+	// 	},
+	// 	{
+	// 		id: 'tom',
+	// 		value: 'Tom',
+	// 	},
+	// ])
 
-	function onChange(value) {
-		console.log(`selected ${value}`)
-	}
+	// function onChange(value) {
+	// 	console.log(`selected ${value}`)
+	// }
 
-	function onBlur() {
-		console.log('blur')
-	}
+	// function onBlur() {
+	// 	console.log('blur')
+	// }
 
-	function onFocus() {
-		console.log('focus')
-	}
+	// function onFocus() {
+	// 	console.log('focus')
+	// }
 
-	function onSearch(val) {
-		console.log('search:', val)
-	}
+	// function onSearch(val) {
+	// 	console.log('search:', val)
+	// }
 
 	function onClose() {
 		resetForm()
 		setVisible(false)
 	}
 
-	function onSubmit() {
+	async function onSubmit() {
+		switch (header) {
+			case 'Add Sibling':
+				addNodeSibling(rowInfo)
+				break
+			case 'Add Child':
+				addNodeChild(rowInfo)
+				break
+			case 'Update':
+				updateNode(rowInfo)
+				break
+
+			default:
+				createNode()
+				break
+		}
 		resetForm()
 		setVisible(false)
 	}
@@ -58,6 +92,7 @@ export default function Dashboard() {
 	function resetForm() {
 		setTitle('')
 		setSubTitle('')
+		setRowInfo(null)
 	}
 
 	return (
@@ -65,7 +100,7 @@ export default function Dashboard() {
 			<Tree />
 
 			<Drawer
-				title='New Member'
+				title={header}
 				placement='right'
 				closable={false}
 				onClose={onClose}
@@ -82,7 +117,7 @@ export default function Dashboard() {
 					onChange={(e) => setSubTitle(e.target.value)}
 					placeholder='SubTitle'
 				/>
-				<Select
+				{/* <Select
 					showSearch
 					style={{ marginTop: 10, width: '100%' }}
 					placeholder='Select a person'
@@ -95,10 +130,12 @@ export default function Dashboard() {
 						option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 					}
 				>
-					{options?.map((element) => (
-						<Option value={element.key}>{element.value}</Option>
+					{options?.map((element, i) => (
+						<Option key={i} value={element.key}>
+							{element.value}
+						</Option>
 					))}
-				</Select>
+				</Select> */}
 				<div
 					style={{
 						position: 'absolute',

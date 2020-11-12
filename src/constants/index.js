@@ -24,3 +24,12 @@ export const FULLNAME =
 export const USERNAME =
 	process.env.NODE_ENV !== 'production' ? 'chnirt@gmail.com' : ''
 export const PASSWORD = process.env.NODE_ENV !== 'production' ? '123456' : ''
+
+export const TYPE = {
+	ADD: 'Add',
+	ADDSIBLING: 'AddSibling',
+	ADDCHILD: 'AddChild',
+	UPDATE: 'Update',
+	REMOVE: 'Remove',
+	INFO: 'Info',
+}

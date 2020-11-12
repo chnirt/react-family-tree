@@ -5,30 +5,31 @@ import {
 	changeNodeAtPath,
 	toggleExpandedForAll,
 } from 'react-sortable-tree'
+import { nanoid } from 'nanoid'
 
 const TreeContext = createContext()
 
 const seed = [
 	{
-		id: '123',
+		id: nanoid(),
 		title: 'Nhà Họ Lê',
 		subtitle: 'home',
 		isDirectory: true,
 		expanded: true,
 		children: [
-			{ id: '456', title: 'Lê Trần A', subtitle: 'male' },
+			{ id: nanoid(), title: 'Lê Trần A', subtitle: 'male' },
 			{
-				id: '789',
+				id: nanoid(),
 				title: 'Lê Thị B',
 				subtitle: 'female',
 				expanded: true,
 				children: [
 					{
-						id: '234',
+						id: nanoid(),
 						title: 'Lê Ngọc C',
 						subtitle: 'female',
 					},
-					{ id: '567', title: 'Lê Phạm D', subtitle: 'male' },
+					{ id: nanoid(), title: 'Lê Phạm D', subtitle: 'male' },
 				],
 			},
 		],
@@ -43,6 +44,8 @@ export function TreeProvider({ children }) {
 	const [searchFocusIndex, setSearchFocusIndex] = useState(0)
 	const [searchFoundCount, setSearchFoundCount] = useState(null)
 	const [visible, setVisible] = useState(false)
+	const [header, setHeader] = useState('')
+	const [rowInfo, setRowInfo] = useState(null)
 	const inputEl = useRef()
 
 	function updateTreeData(treeData) {
@@ -81,12 +84,12 @@ export function TreeProvider({ children }) {
 	}
 
 	function createNode() {
-		const value = inputEl.current.value
+		// const value = inputEl.current.value
 
-		if (value === '') {
-			inputEl.current.focus()
-			return
-		}
+		// if (value === '') {
+		// 	inputEl.current.focus()
+		// 	return
+		// }
 
 		let newTree = addNodeUnderParent({
 			treeData: treeData,
@@ -94,54 +97,56 @@ export function TreeProvider({ children }) {
 			expandParent: true,
 			getNodeKey,
 			newNode: {
-				id: '123',
-				title: value,
+				id: nanoid(),
+				title,
+				subtitle: subTitle,
 			},
 		})
 
 		setTreeData(newTree.treeData)
 
-		inputEl.current.value = ''
+		// inputEl.current.value = ''
 	}
 
 	function updateNode(rowInfo) {
 		const { node, path } = rowInfo
 		const { children } = node
 
-		const value = inputEl.current.value
+		// const value = inputEl.current.value
 
-		if (value === '') {
-			inputEl.current.focus()
-			return
-		}
+		// if (value === '') {
+		// 	inputEl.current.focus()
+		// 	return
+		// }
 
 		let newTree = changeNodeAtPath({
 			treeData,
 			path,
 			getNodeKey,
 			newNode: {
+				id: nanoid(),
+				title,
+				subtitle: subTitle,
 				children,
-				title: value,
-				subtitle: 'xxx',
 			},
 		})
 
 		setTreeData(newTree)
 
-		inputEl.current.value = ''
+		// inputEl.current.value = ''
 	}
 
 	function addNodeChild(rowInfo) {
 		let { path } = rowInfo
 
-		const value = inputEl.current.value
-		// const value = inputEls.current[treeIndex].current.value;
+		// const value = inputEl.current.value
+		// // const value = inputEls.current[treeIndex].current.value;
 
-		if (value === '') {
-			inputEl.current.focus()
-			// inputEls.current[treeIndex].current.focus();
-			return
-		}
+		// if (value === '') {
+		// 	inputEl.current.focus()
+		// 	// inputEls.current[treeIndex].current.focus();
+		// 	return
+		// }
 
 		let newTree = addNodeUnderParent({
 			treeData: treeData,
@@ -149,28 +154,29 @@ export function TreeProvider({ children }) {
 			expandParent: true,
 			getNodeKey,
 			newNode: {
-				title: value,
-				subtitle: 'xxx',
+				id: nanoid(),
+				title,
+				subtitle: subTitle,
 			},
 		})
 
 		setTreeData(newTree.treeData)
 
-		inputEl.current.value = ''
+		// inputEl.current.value = ''
 		// inputEls.current[treeIndex].current.value = "";
 	}
 
 	function addNodeSibling(rowInfo) {
 		let { path } = rowInfo
 
-		const value = inputEl.current.value
-		// const value = inputEls.current[treeIndex].current.value;
+		// const value = inputEl.current.value
+		// // const value = inputEls.current[treeIndex].current.value;
 
-		if (value === '') {
-			inputEl.current.focus()
-			// inputEls.current[treeIndex].current.focus();
-			return
-		}
+		// if (value === '') {
+		// 	inputEl.current.focus()
+		// 	// inputEls.current[treeIndex].current.focus();
+		// 	return
+		// }
 
 		let newTree = addNodeUnderParent({
 			treeData: treeData,
@@ -178,14 +184,15 @@ export function TreeProvider({ children }) {
 			expandParent: true,
 			getNodeKey,
 			newNode: {
-				title: value,
-				subtitle: 'xxx',
+				id: nanoid(),
+				title,
+				subtitle: subTitle,
 			},
 		})
 
 		setTreeData(newTree.treeData)
 
-		inputEl.current.value = ''
+		// inputEl.current.value = ''
 		// inputEls.current[treeIndex].current.value = "";
 	}
 
@@ -224,6 +231,10 @@ export function TreeProvider({ children }) {
 				setSubTitle,
 				visible,
 				setVisible,
+				header,
+				setHeader,
+				rowInfo,
+				setRowInfo,
 				collapseAll,
 				expandAll,
 				searchString,
@@ -238,6 +249,7 @@ export function TreeProvider({ children }) {
 				setSearchFocusIndex,
 				addNodeSibling,
 				addNodeChild,
+				createNode,
 				updateNode,
 				removeNode,
 				alertNodeInfo,
