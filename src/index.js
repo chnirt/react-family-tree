@@ -6,21 +6,23 @@ import './index.less'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { ScrollToTop } from './components'
-import { AuthProvider, TreeProvider } from './context'
+import { AuthProvider, FirebaseProvider, TreeProvider } from './context'
 import { MyConsole } from './configs'
 
 MyConsole.run()
 
 ReactDOM.render(
 	<RecoilRoot>
-		<AuthProvider>
-			<TreeProvider>
-				<BrowserRouter>
-					<ScrollToTop />
-					<App />
-				</BrowserRouter>
-			</TreeProvider>
-		</AuthProvider>
+		<FirebaseProvider>
+			<AuthProvider>
+				<TreeProvider>
+					<BrowserRouter>
+						<ScrollToTop />
+						<App />
+					</BrowserRouter>
+				</TreeProvider>
+			</AuthProvider>
+		</FirebaseProvider>
 	</RecoilRoot>,
 	document.getElementById('root')
 )

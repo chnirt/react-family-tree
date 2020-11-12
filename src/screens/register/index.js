@@ -1,51 +1,61 @@
 import React, { Fragment } from 'react'
-import { Row, Col, Typography, Form, Input, Button, Image } from 'antd'
+import {
+	Row,
+	Col,
+	Typography,
+	Form,
+	Input,
+	Button,
+	Image,
+	notification,
+} from 'antd'
 import { useHistory } from 'react-router-dom'
 import logo from '../../assets/images/logo.png'
 import { useSetRecoilState } from 'recoil'
 import { loadingState } from '../../atoms'
+import { useFirebase } from '../../context'
+import { FULLNAME, USERNAME, PASSWORD } from '../../constants'
 
 const { Title, Text } = Typography
 
 export default function Register() {
 	let history = useHistory()
 	const setIsLoading = useSetRecoilState(loadingState)
+	const { registerFB } = useFirebase()
 
 	async function onFinish(values) {
 		const { fullName, emailOrYourPhoneNumber, password } = values
 
 		setIsLoading(true)
 
-		setTimeout(() => {
-			try {
-				// const currentUser = await registerFB(
-				// 	fullName,
-				// 	emailOrYourPhoneNumber,
-				// 	password
-				// )
-				// console.log(currentUser)
-				// if (currentUser) {
-				// 	notification['success']({
-				// 		message: 'Register',
-				// 		description: 'Register successfully!',
-				// 		onClick: () => {
-				// 			console.log('Notification Clicked!')
-				// 		},
-				// 		placement: 'bottomRight',
-				// 	})
-				// }
-			} catch (error) {
-				// notification['error']({
-				// 	message: 'Login Error',
-				// 	description: error.message,
-				// 	onClick: () => {
-				// 		console.log('Notification Clicked!')
-				// 	},
-				// 	placement: 'bottomRight',
-				// })
+		try {
+			const currentUser = await registerFB(
+				fullName,
+				emailOrYourPhoneNumber,
+				password
+			)
+			console.log(currentUser)
+			if (currentUser) {
+				notification['success']({
+					message: 'Register',
+					description: 'Register successfully!',
+					onClick: () => {
+						console.log('Notification Clicked!')
+					},
+					placement: 'bottomRight',
+				})
 			}
-			setIsLoading(false)
-		}, 1000)
+		} catch (error) {
+			notification['error']({
+				message: 'Login Error',
+				description: error.message,
+				onClick: () => {
+					console.log('Notification Clicked!')
+				},
+				placement: 'bottomRight',
+			})
+		}
+		setIsLoading(false)
 	}
 
 	function onFinishFailed(errorInfo) {
@@ -100,11 +110,11 @@ export default function Register() {
 							style={{ padding: '0 5vw' }}
 							name='normal_login'
 							className='login-form'
-							// initialValues={{
-							// 	fullName: 'Trịnh Chin Chin',
-							// 	emailOrYourPhoneNumber: 'trinhchinchin@gmail.com',
-							// 	password: '123456',
-							// }}
+							initialValues={{
+								fullName: FULLNAME,
+								emailOrYourPhoneNumber: USERNAME,
+								password: PASSWORD,
+							}}
 							onFinish={onFinish}
 							onFinishFailed={onFinishFailed}
 						>

@@ -19,6 +19,8 @@ export const WARN = '#fadb14'
 export const ERROR = '#f5222d'
 
 // login
+export const FULLNAME =
+	process.env.NODE_ENV !== 'production' ? 'Trinh Chin Chin' : ''
 export const USERNAME =
 	process.env.NODE_ENV !== 'production' ? 'chnirt@gmail.com' : ''
 export const PASSWORD = process.env.NODE_ENV !== 'production' ? '123456' : ''

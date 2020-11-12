@@ -1,17 +1,63 @@
-import React, { Fragment } from 'react'
-import { Button, Drawer } from 'antd'
+import React, { Fragment, useState } from 'react'
+import { Button, Drawer, Input, Select } from 'antd'
 import { Tree } from '../../components'
 import { useTree } from '../../context'
 
+const { Option } = Select
+
 export default function Dashboard() {
-	const { visible, setVisible } = useTree()
+	const {
+		visible,
+		setVisible,
+		title,
+		setTitle,
+		subTitle,
+		setSubTitle,
+	} = useTree()
+	const [options] = useState([
+		{
+			id: 'jack',
+			value: 'Jack',
+		},
+		{
+			id: 'lucy',
+			value: 'Lucy',
+		},
+		{
+			id: 'tom',
+			value: 'Tom',
+		},
+	])
+
+	function onChange(value) {
+		console.log(`selected ${value}`)
+	}
+
+	function onBlur() {
+		console.log('blur')
+	}
+
+	function onFocus() {
+		console.log('focus')
+	}
+
+	function onSearch(val) {
+		console.log('search:', val)
+	}
 
 	function onClose() {
+		resetForm()
 		setVisible(false)
 	}
 
 	function onSubmit() {
+		resetForm()
 		setVisible(false)
+	}
+
+	function resetForm() {
+		setTitle('')
+		setSubTitle('')
 	}
 
 	return (
@@ -25,113 +71,34 @@ export default function Dashboard() {
 				onClose={onClose}
 				visible={visible}
 			>
-				{/* <Form layout='vertical' hideRequiredMark>
-					<Row gutter={16}>
-						<Col span={12}>
-							<Form.Item label='Name'>
-								{getFieldDecorator('name', {
-									rules: [
-										{ required: true, message: 'Please enter user name' },
-									],
-								})(<Input placeholder='Please enter user name' />)}
-							</Form.Item>
-						</Col>
-						<Col span={12}>
-							<Form.Item label='Url'>
-								{getFieldDecorator('url', {
-									rules: [{ required: true, message: 'Please enter url' }],
-								})(
-									<Input
-										style={{ width: '100%' }}
-										addonBefore='http://'
-										addonAfter='.com'
-										placeholder='Please enter url'
-									/>
-								)}
-							</Form.Item>
-						</Col>
-					</Row>
-					<Row gutter={16}>
-						<Col span={12}>
-							<Form.Item label='Owner'>
-								{getFieldDecorator('owner', {
-									rules: [
-										{ required: true, message: 'Please select an owner' },
-									],
-								})(
-									<Select placeholder='Please select an owner'>
-										<Option value='xiao'>Xiaoxiao Fu</Option>
-										<Option value='mao'>Maomao Zhou</Option>
-									</Select>
-								)}
-							</Form.Item>
-						</Col>
-						<Col span={12}>
-							<Form.Item label='Type'>
-								{getFieldDecorator('type', {
-									rules: [
-										{ required: true, message: 'Please choose the type' },
-									],
-								})(
-									<Select placeholder='Please choose the type'>
-										<Option value='private'>Private</Option>
-										<Option value='public'>Public</Option>
-									</Select>
-								)}
-							</Form.Item>
-						</Col>
-					</Row>
-					<Row gutter={16}>
-						<Col span={12}>
-							<Form.Item label='Approver'>
-								{getFieldDecorator('approver', {
-									rules: [
-										{ required: true, message: 'Please choose the approver' },
-									],
-								})(
-									<Select placeholder='Please choose the approver'>
-										<Option value='jack'>Jack Ma</Option>
-										<Option value='tom'>Tom Liu</Option>
-									</Select>
-								)}
-							</Form.Item>
-						</Col>
-						<Col span={12}>
-							<Form.Item label='DateTime'>
-								{getFieldDecorator('dateTime', {
-									rules: [
-										{ required: true, message: 'Please choose the dateTime' },
-									],
-								})(
-									<DatePicker.RangePicker
-										style={{ width: '100%' }}
-										getPopupContainer={(trigger) => trigger.parentNode}
-									/>
-								)}
-							</Form.Item>
-						</Col>
-					</Row>
-					<Row gutter={16}>
-						<Col span={24}>
-							<Form.Item label='Description'>
-								{getFieldDecorator('description', {
-									rules: [
-										{
-											required: true,
-											message: 'please enter url description',
-										},
-									],
-								})(
-									<Input.TextArea
-										rows={4}
-										placeholder='please enter url description'
-									/>
-								)}
-							</Form.Item>
-						</Col>
-					</Row>
-				</Form> */}
-
+				<Input
+					value={title}
+					onChange={(e) => setTitle(e.target.value)}
+					placeholder='Title'
+				/>
+				<Input
+					style={{ marginTop: 10 }}
+					value={subTitle}
+					onChange={(e) => setSubTitle(e.target.value)}
+					placeholder='SubTitle'
+				/>
+				<Select
+					showSearch
+					style={{ marginTop: 10, width: '100%' }}
+					placeholder='Select a person'
+					optionFilterProp='children'
+					onChange={onChange}
+					onFocus={onFocus}
+					onBlur={onBlur}
+					onSearch={onSearch}
+					filterOption={(input, option) =>
+						option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+					}
+				>
+					{options?.map((element) => (
+						<Option value={element.key}>{element.value}</Option>
+					))}
+				</Select>
 				<div
 					style={{
 						position: 'absolute',

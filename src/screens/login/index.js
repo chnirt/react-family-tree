@@ -8,13 +8,14 @@ import {
 	Input,
 	Button,
 	Checkbox,
+	notification,
 } from 'antd'
 import { useSetRecoilState } from 'recoil'
-import { useAuth } from '../../context/authContext'
+import { useHistory } from 'react-router-dom'
+import { useAuth, useFirebase } from '../../context'
 import logo from '../../assets/images/logo.png'
 import { USERNAME, PASSWORD } from '../../constants'
 import { loadingState } from '../../atoms'
-import { useHistory } from 'react-router-dom'
 
 const { Title, Text } = Typography
 
@@ -22,20 +23,35 @@ export default function Login() {
 	const setIsLoading = useSetRecoilState(loadingState)
 	const { login } = useAuth()
 	let history = useHistory()
+	const { loginFB } = useFirebase()
 
 	async function onFinish(values) {
 		const { emailOrYourPhoneNumber, password } = values
 
 		setIsLoading(true)
 
-		setTimeout(() => {
-			setIsLoading(false)
+		try {
+			const { user } = await loginFB(emailOrYourPhoneNumber, password)
 
-			login(
-				{ emailOrYourPhoneNumber, password },
-				emailOrYourPhoneNumber + password
-			)
-		}, 1000)
+			// console.log(user)
+
+			user.getIdToken().then((idToken) => {
+				// console.log(idToken)
+				login(user, idToken)
+				setIsLoading(false)
+			})
+		} catch (error) {
+			// console.log(error.message)
+			notification['error']({
+				message: 'Login Error',
+				description: error.message,
+				onClick: () => {
+					console.log('Notification Clicked!')
+				},
+				placement: 'bottomRight',
+			})
+			setIsLoading(false)
+		}
 	}
 
 	function onFinishFailed(errorInfo) {

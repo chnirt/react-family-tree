@@ -100,7 +100,7 @@ export function Tree() {
 
 			<div
 				style={{
-					height: 'calc(100vh - 152px)',
+					height: 'calc(100vh - 222px)',
 					overflowX: 'hidden',
 					overflowY: 'auto',
 				}}
